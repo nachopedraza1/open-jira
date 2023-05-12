@@ -1,14 +1,15 @@
 import { NextPage } from 'next';
+
 import Typography from '@mui/material/Typography'
+
+import { Layout } from '@/components/layouts';
 
 const HomePage: NextPage = () => {
   return (
-    <div>
-
+    <Layout>
       <Typography variant="h1" color="primary" > Hola Mundo </Typography>
-
-    </div>
+    </Layout>
   )
 }
 
-export default HomePage
+export default HomePage;

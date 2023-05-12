@@ -13,5 +13,12 @@ export const darkTheme = createTheme({
         error: {
             main: red.A400
         }
+    },
+    components: {
+        MuiAppBar: {
+            defaultProps: {
+                elevation: 0
+            }
+        }
     }
 });
