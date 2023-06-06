@@ -1,13 +1,14 @@
-import { EntriesState } from "./EntriesProvider";
-
-type entriesActionType =
-    | { type: '[entries] - ActionName' }
+import { EntriesState } from './';
 
 
-export const entriesReducer = (state: EntriesState, action: entriesActionType): EntriesState => {
+type EntriesActionType =
+    | { type: '[Entries] - ActionName' }
+
+
+export const entriesReducer = (state: EntriesState, action: EntriesActionType): EntriesState => {
 
     switch (action.type) {
-        case '[entries] - ActionName':
+        case '[Entries] - ActionName':
             return {
                 ...state,
             }
