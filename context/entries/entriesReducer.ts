@@ -1,18 +1,32 @@
+import { Entry, EntryStatus } from '@/interfaces';
 import { EntriesState } from './';
 
 
 type EntriesActionType =
-    | { type: '[Entries] - ActionName' }
+    | { type: '[Entries] - New-entry', payload: Entry }
+    | { type: '[Entries] - Update-entry', payload: Entry }
 
 
 export const entriesReducer = (state: EntriesState, action: EntriesActionType): EntriesState => {
 
     switch (action.type) {
-        case '[Entries] - ActionName':
+        case '[Entries] - New-entry':
             return {
                 ...state,
+                entries: [...state.entries, action.payload]
             }
 
+        case '[Entries] - Update-entry':
+            return {
+                ...state,
+                entries: state.entries.map(entry => {
+                    if (entry._id === action.payload._id) {
+                        entry.description = action.payload.description;
+                        entry.status = action.payload.status;
+                    }
+                    return entry;
+                })
+            }
         default:
             return state;
     }

@@ -4,6 +4,9 @@ import { createContext } from 'react';
 
 interface ContextProps {
     entries: Entry[];
+
+    onAddNewEntry: (description: string) => void;
+    onUpdateEntry: (entryUp: Entry) => void;
 }
 
 
