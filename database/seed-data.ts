@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5d385f8290cc63236185eba3468fd866eed78965
 interface SeedData {
     entries: SeedEntry[]
 }

@@ -12,7 +12,7 @@ const mongoConnection = {
 
 export const connect = async () => {
 
-    if (mongoConnection.isConnected > 0) {
+    if (mongoConnection.isConnected) {
         console.log('Ya estabamos conectados');
         return;
     }
@@ -44,3 +44,4 @@ export const disconnect = async () => {
 
     console.log('Desconectado de MongoDB');
 }
+
