@@ -1,7 +1,7 @@
-import { FC, ReactNode, useReducer } from 'react';
+import { FC, ReactNode, useEffect, useReducer } from 'react';
 import { EntriesContext, entriesReducer } from './';
 import { Entry } from '@/interfaces';
-import { v4 as uuidv4 } from 'uuid';
+import { entriesApi } from '@/apis';
 
 export interface EntriesState {
     entries: Entry[];
@@ -17,20 +17,25 @@ export const EntriesProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
 
-    const onAddNewEntry = (description: string) => {
-        const newEntry: Entry = {
-            _id: uuidv4(),
-            description,
-            createdAt: Date.now(),
-            status: 'pending'
-        }
+    const onAddNewEntry = async (description: string) => {
 
-        dispatch({ type: '[Entries] - New-entry', payload: newEntry });
+        const { data } = await entriesApi.post<Entry>('/entries', { description })
+
+        dispatch({ type: '[Entries] - New-entry', payload: data });
     }
 
     const onUpdateEntry = (entry: Entry) => {
         dispatch({ type: '[Entries] - Update-entry', payload: entry })
     }
+
+    const refreshEntries = async () => {
+        const { data } = await entriesApi.get<Entry[]>('/entries')
+        dispatch({ type: '[Entries] - Refresh-entry', payload: data })
+    }
+
+    useEffect(() => {
+        refreshEntries();
+    }, [])
 
     return (
         <EntriesContext.Provider value={{

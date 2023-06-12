@@ -1,4 +1,3 @@
-
 interface SeedData {
     entries: SeedEntry[]
 }
