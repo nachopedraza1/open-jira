@@ -5,11 +5,7 @@ import { EntriesProvider } from '@/context/entries'
 
 import { darkTheme, lightTheme } from '@/themes'
 
-import { ThemeProvider } from '@emotion/react'
-import { CssBaseline } from '@mui/material'
-
-import '@/styles/globals.css'
-
+import { CssBaseline, ThemeProvider } from '@mui/material'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
