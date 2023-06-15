@@ -6,7 +6,7 @@ interface ContextProps {
     entries: Entry[];
 
     onAddNewEntry: (description: string) => void;
-    onUpdateEntry: (entryUp: Entry) => void;
+    onUpdateEntry: (entryUp: Entry, showSnackBar?: boolean) => void;
 }
 
 

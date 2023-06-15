@@ -1,17 +1,26 @@
 import { Layout } from "@/components/layouts";
-import { NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
 import { Grid, Card, CardHeader, CardContent, TextField, CardActions, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, capitalize, IconButton } from '@mui/material';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import Delete from '@mui/icons-material/Delete';
-import { EntryStatus } from "@/interfaces";
-import { ChangeEvent, useMemo, useState } from "react";
+import { Entry, EntryStatus } from "@/interfaces";
+import { ChangeEvent, useContext, useMemo, useState } from "react";
+import { dbEntries } from "@/database";
+import { EntriesContext } from "@/context/entries";
+import { dateFunctions } from "@/utils";
 
 const validSatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
 
-export const EntryPage: NextPage = () => {
+interface Props {
+    entry: Entry
+}
 
-    const [inputValue, setInputValue] = useState('');
-    const [status, setStatus] = useState<EntryStatus>('pending');
+export const EntryPage: NextPage<Props> = ({ entry }) => {
+
+    const { onUpdateEntry } = useContext(EntriesContext);
+
+    const [inputValue, setInputValue] = useState(entry.description);
+    const [status, setStatus] = useState<EntryStatus>(entry.status);
     const [touched, setTouched] = useState(false);
 
     const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched]);
@@ -24,6 +33,17 @@ export const EntryPage: NextPage = () => {
         setStatus(event.target.value as EntryStatus)
     }
 
+    const onSave = () => {
+
+        const updatedEntry: Entry = {
+            ...entry,
+            status: status,
+            description: inputValue,
+        }
+
+        onUpdateEntry(updatedEntry, true);
+    }
+
     return (
         <Layout title=".. .. .. .. ..">
             <Grid container justifyContent="center" marginTop={2}>
@@ -31,7 +51,7 @@ export const EntryPage: NextPage = () => {
                     <Card>
                         <CardHeader
                             title={`Entrada: ${inputValue}`}
-                            subheader={`Creada hace x minutos`}
+                            subheader={`Creada hace ${dateFunctions.getFormatDistance(entry.createdAt)}`}
                         />
 
                         <CardContent>
@@ -45,8 +65,8 @@ export const EntryPage: NextPage = () => {
                                 value={inputValue}
                                 onChange={onInputValueChange}
                                 onBlur={() => setTouched(true)}
-                                helperText={inputValue.length <= 0 && touched && 'Ingrese un valor'}
-                                error={inputValue.length <= 0 && touched}
+                                helperText={isNotValid && 'Ingrese un valor'}
+                                error={isNotValid}
                             />
 
                             <FormControl>
@@ -71,6 +91,7 @@ export const EntryPage: NextPage = () => {
                                 fullWidth
                                 variant="contained"
                                 disabled={inputValue.length <= 0}
+                                onClick={onSave}
                             >
                                 Save
                             </Button>
@@ -92,6 +113,28 @@ export const EntryPage: NextPage = () => {
 
         </Layout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+    const { id } = ctx.params as { id: string };
+
+    const entry = await dbEntries.getEntriesById(id);
+
+    if (!entry) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: {
+            entry
+        }
+    }
 }
 
 export default EntryPage;
